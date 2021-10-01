@@ -3,7 +3,6 @@ package com.artineer.spring_lecture_week_2.conroller;
 import com.artineer.spring_lecture_week_2.domain.Article;
 import com.artineer.spring_lecture_week_2.dto.ArticleDto;
 import com.artineer.spring_lecture_week_2.dto.Response;
-import com.artineer.spring_lecture_week_2.exception.ApiException;
 import com.artineer.spring_lecture_week_2.service.ArticleService;
 import com.artineer.spring_lecture_week_2.vo.ApiCode;
 import lombok.RequiredArgsConstructor;
@@ -17,22 +16,32 @@ public class ArticleController {
 
     @PostMapping
     public Response<Long> post(@RequestBody ArticleDto.ReqPost request) {
-        return Response.ok(articleService.save(Article.of(request)));
+        Article article = Article.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .build();
+
+        Long id = articleService.save(article);
+
+        return Response.<Long>builder()
+                .code(ApiCode.SUCCESS)
+                .data(id)
+                .build();
     }
 
     @GetMapping("/{id}")
     public Response<ArticleDto.Res> get(@PathVariable Long id) {
-        return Response.ok(ArticleDto.Res.of(articleService.findById(id)));
-    }
+        Article article = articleService.findById(id);
 
-    @PutMapping("/{id}")
-    public Response<Object> put(@PathVariable Long id, @RequestBody ArticleDto.ReqPut request) {
-        return Response.ok(ArticleDto.Res.of(articleService.update(Article.of(request, id))));
-    }
+        ArticleDto.Res response = ArticleDto.Res.builder()
+                .id(String.valueOf(article.getId()))
+                .title(article.getTitle())
+                .content(article.getContent())
+                .build();
 
-    @DeleteMapping("/{id}")
-    public Response<Void> delete(@PathVariable Long id) {
-        articleService.delete(id);
-        return Response.ok();
+        return Response.<ArticleDto.Res>builder()
+                .code(ApiCode.SUCCESS)
+                .data(response)
+                .build();
     }
 }

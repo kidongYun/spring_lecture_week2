@@ -1,6 +1,5 @@
 package com.artineer.spring_lecture_week_2.dto;
 
-import com.artineer.spring_lecture_week_2.domain.Article;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,12 +13,6 @@ public class ArticleDto {
     }
 
     @Getter
-    public static class ReqPut {
-        String title;
-        String content;
-    }
-
-    @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -27,13 +20,5 @@ public class ArticleDto {
         private String id;
         private String title;
         private String content;
-
-        public static Res of(Article from) {
-            return Res.builder()
-                    .id(String.valueOf(from.getId()))
-                    .title(from.getTitle())
-                    .content(from.getContent())
-                    .build();
-        }
     }
 }
